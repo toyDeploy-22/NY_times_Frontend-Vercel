@@ -35,21 +35,42 @@ h6.errorChecker {
   text-align: center;
   color: crimson;
 }
+
+img {
+  font-size: 8px;
+  width: 400px;
+}
+
+i {
+  font-size: 8px;
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a + p {
+  margin-bottom: 0;
+  font-size: 11px;
+}
       </style>
   </head>
   <body>
     <h1>NY Times </h1>
     <h4>First Titles</h4>
     <p></p>
-    <section>
+    <section id="allArticles">
 <h4 class="loader">...Loading articles</h4>
 <h6 class="errorChecker"></h6>
       </section>
     <script>
       let setLoader = document.querySelector(".loader");
       let setError = document.querySelector(".errorChecker");
-      let articles = [];
       let myItalic = document.getElementsByTagName("p")[0];
+            let articles = [];
+let allArticles = document.querySelector("#allArticles");
 const updateDate =()=>{
   let currentDate = new Date();
 let currentWeekDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -71,9 +92,21 @@ let articlesFetched = fetch(Url);
 if(Response){
 articlesFetched.then(data => data.json()).then(news => {
   for(i=0; i<10; i++){
-    articles.push(news[i])};
-console.log(articles)}
-);
+    articles.push(news[i]);
+    };
+    }).then(()=>{
+      let newElement = document.createElement("div");
+     allArticles.appendChild(newElement);
+     newElement.innerHTML = articles.map(title =>`<div><div style="display:${title ? "none" : "block"}; color: yellowgreen;"><h6>Loading article...</h6></div>
+      <a href=${title.web_url}><h5>${title.headline.main}</h5>
+      <img alt="${(title.abstract).slice(0,20)}..." src=${title.url} title="${(title.headline.main).slice(0, 20)}..."></a>
+      <p>${title.snippet}</p>
+      <i>${title.source}</i>
+      </div>`).join("");
+    
+      
+      
+    });
 setLoader.style.display = 'none';
 } else {
   let errorText = document.createTextNode("Cannot retrieve the data. Please try to refresh the page.");
